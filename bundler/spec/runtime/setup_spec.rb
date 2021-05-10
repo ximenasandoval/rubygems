@@ -145,6 +145,7 @@ RSpec.describe "Bundler.setup" do
 
       ruby <<-RUBY
         require 'bundler'
+        gem "bundler", "#{Bundler::VERSION}" if #{ruby_core?}
         Bundler.setup
         puts $LOAD_PATH
       RUBY
