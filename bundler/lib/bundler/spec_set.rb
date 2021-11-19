@@ -72,7 +72,7 @@ module Bundler
       materialized.map! do |s|
         next s unless s.is_a?(LazySpecification)
         s.source.local!
-        s.__materialize__ || s
+        s.materialize_for_installation || s
       end
       SpecSet.new(materialized)
     end
@@ -85,10 +85,20 @@ module Bundler
         next s unless s.is_a?(LazySpecification)
         s.source.local!
         s.source.remote!
-        spec = s.__materialize__
+        spec = s.materialize_for_installation
         raise GemNotFound, "Could not find #{s.full_name} in any of the sources" unless spec
         spec
       end
+    end
+
+    def materialized_for_resolution
+      materialized = @specs.map do |s|
+        yield s
+        spec = s.materialize_for_resolution
+        raise GemNotFound, "Could not find #{s.full_name} in #{s.source}" unless spec
+        spec
+      end
+      SpecSet.new(materialized)
     end
 
     def missing_specs

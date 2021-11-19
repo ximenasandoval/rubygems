@@ -30,7 +30,7 @@ module Bundler
       @resolver = Molinillo::Resolver.new(self, self)
       @search_for = {}
       @base_dg = Molinillo::DependencyGraph.new
-      @base.each do |ls|
+      @base = base.materialized_for_resolution do |ls|
         dep = Dependency.new(ls.name, ls.version)
         @base_dg.add_vertex(ls.name, DepProxy.get_proxy(dep, ls.platform), true)
       end
