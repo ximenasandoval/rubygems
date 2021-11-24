@@ -253,26 +253,16 @@ module Bundler
         next if name == "bundler"
         next unless search_for(requirement).empty?
 
-        if (base = @base[name]) && !base.empty?
-          version = base.first.version
-          message = "You have requested:\n" \
-            "  #{name} #{requirement.requirement}\n\n" \
-            "The bundle currently has #{name} locked at #{version}.\n" \
-            "Try running `bundle update #{name}`\n\n" \
-            "If you are updating multiple gems in your Gemfile at once,\n" \
-            "try passing them all to `bundle update`"
-        else
-          source = source_for(name)
-          specs = source.specs.search(name)
-          versions_with_platforms = specs.map {|s| [s.version, s.platform] }
-          cache_message = begin
-                              " or in gems cached in #{Bundler.settings.app_cache_path}" if Bundler.app_cache.exist?
-                            rescue GemfileNotFound
-                              nil
-                            end
-          message = String.new("Could not find gem '#{SharedHelpers.pretty_dependency(requirement)}' in #{source}#{cache_message}.\n")
-          message << "The source contains the following versions of '#{name}': #{formatted_versions_with_platforms(versions_with_platforms)}" if versions_with_platforms.any?
-        end
+        source = source_for(name)
+        specs = source.specs.search(name)
+        versions_with_platforms = specs.map {|s| [s.version, s.platform] }
+        cache_message = begin
+                            " or in gems cached in #{Bundler.settings.app_cache_path}" if Bundler.app_cache.exist?
+                          rescue GemfileNotFound
+                            nil
+                          end
+        message = String.new("Could not find gem '#{SharedHelpers.pretty_dependency(requirement)}' in #{source}#{cache_message}.\n")
+        message << "The source contains the following versions of '#{name}': #{formatted_versions_with_platforms(versions_with_platforms)}" if versions_with_platforms.any?
         raise GemNotFound, message
       end
     end
