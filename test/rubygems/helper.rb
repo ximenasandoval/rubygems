@@ -2,21 +2,11 @@
 
 require 'rubygems'
 
-# If bundler gemspec exists, add to stubs
-bundler_gemspec = File.expand_path("../../../bundler/bundler.gemspec", __FILE__)
-if File.exist?(bundler_gemspec)
-  Gem::Specification.dirs.unshift File.dirname(bundler_gemspec)
-  Gem::Specification.class_variable_set :@@stubs, nil
-  Gem::Specification.stubs
-  Gem::Specification.dirs.shift
-end
-
 begin
   gem 'test-unit', '~> 3.0'
 rescue Gem::LoadError
 end
 
-require 'bundler'
 require 'test/unit'
 
 ENV["JARS_SKIP"] = "true" if Gem.java_platform? # avoid unnecessary and noisy `jar-dependencies` post install hook
@@ -399,7 +389,6 @@ class Gem::TestCase < Test::Unit::TestCase
     Gem.loaded_specs.clear
     Gem.instance_variable_set(:@activated_gem_paths, 0)
     Gem.clear_default_specs
-    Bundler.reset!
 
     Gem.configuration.verbose = true
     Gem.configuration.update_sources = true
