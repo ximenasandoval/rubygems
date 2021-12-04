@@ -1683,8 +1683,6 @@ class TestGem < Gem::TestCase
     end
   end
 
-  BUNDLER_LIB_PATH = File.expand_path $LOAD_PATH.find {|lp| File.file?(File.join(lp, "bundler.rb")) }
-
   def add_bundler_full_name(names)
     names << "bundler-#{Bundler::VERSION}".freeze
     names.sort!
@@ -1715,7 +1713,7 @@ class TestGem < Gem::TestCase
 
     with_rubygems_gemdeps("-") do
       new_PATH = [File.join(path, "bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)
-      new_RUBYOPT = "-I#{rubygems_path} -I#{BUNDLER_LIB_PATH}"
+      new_RUBYOPT = "-I#{rubygems_path} -I#{bundler_path}"
 
       path = File.join @tempdir, "gem.deps.rb"
 
@@ -1766,7 +1764,7 @@ class TestGem < Gem::TestCase
       Dir.mkdir "sub1"
 
       new_PATH = [File.join(path, "bin"), ENV["PATH"]].join(File::PATH_SEPARATOR)
-      new_RUBYOPT = "-I#{rubygems_path} -I#{BUNDLER_LIB_PATH}"
+      new_RUBYOPT = "-I#{rubygems_path} -I#{bundler_path}"
 
       path = File.join @tempdir, "gem.deps.rb"
 
