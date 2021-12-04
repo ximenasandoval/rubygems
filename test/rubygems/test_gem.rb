@@ -842,7 +842,7 @@ class TestGem < Gem::TestCase
     assert_equal expected, Gem.find_files('sff/discover').sort
     assert_equal expected, Gem.find_files('sff/**.rb').sort, '[ruby-core:31730]'
   ensure
-    assert_equal cwd, actual_load_path.shift unless Gem.java_platform?
+    assert_equal cwd, actual_load_path.shift
   end
 
   def test_self_find_latest_files
@@ -1342,12 +1342,10 @@ class TestGem < Gem::TestCase
       refute Gem.try_activate 'nonexistent'
     end
 
-    unless Gem.java_platform?
-      expected = "Ignoring ext-1 because its extensions are not built. " +
-                 "Try: gem pristine ext --version 1\n"
+    expected = "Ignoring ext-1 because its extensions are not built. " +
+               "Try: gem pristine ext --version 1\n"
 
-      assert_equal expected, err
-    end
+    assert_equal expected, err
   end
 
   def test_self_use_paths_with_nils
@@ -1702,8 +1700,6 @@ class TestGem < Gem::TestCase
   end
 
   def test_looks_for_gemdeps_files_automatically_from_binstubs
-    pend "Requiring bundler messes things up" if Gem.java_platform?
-
     a = util_spec "a", "1" do |s|
       s.executables = %w[foo]
       s.bindir = "exe"
@@ -1751,7 +1747,7 @@ class TestGem < Gem::TestCase
   end
 
   def test_looks_for_gemdeps_files_automatically_from_binstubs_in_parent_dir
-    pend "Requiring bundler messes things up" if Gem.java_platform?
+    pend "IO.popen has issues on JRuby when passed :chdir" if Gem.java_platform?
 
     a = util_spec "a", "1" do |s|
       s.executables = %w[foo]
