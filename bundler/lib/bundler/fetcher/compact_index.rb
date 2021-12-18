@@ -57,6 +57,12 @@ module Bundler
         gem_info
       end
 
+      def versions(gem_name)
+        serial_compact_index_client.dependencies([gem_name]).
+          map {|d| Gem::Version.new(d[1]) }.
+          sort
+      end
+
       def fetch_spec(spec)
         spec -= [nil, "ruby", ""]
         contents = compact_index_client.spec(*spec)

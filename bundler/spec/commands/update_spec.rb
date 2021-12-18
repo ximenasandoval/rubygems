@@ -1110,7 +1110,7 @@ RSpec.describe "bundle update --bundler" do
 
     FileUtils.rm_r gem_repo4
 
-    bundle :update, :bundler => true, :verbose => true
+    bundle :update, :bundler => true, :artifice => "compact_index", :verbose => true
     expect(the_bundle).to include_gem "rack 1.0"
 
     expect(the_bundle.locked_gems.bundler_version).to eq v(Bundler::VERSION)

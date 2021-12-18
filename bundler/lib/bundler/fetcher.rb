@@ -154,6 +154,13 @@ module Bundler
       raise
     end
 
+    def versions(name)
+      compact_index_fetcher = fetchers.first
+      return [] unless compact_index_fetcher.available?
+
+      compact_index_fetcher.versions(name)
+    end
+
     def use_api
       return @use_api if defined?(@use_api)
 
